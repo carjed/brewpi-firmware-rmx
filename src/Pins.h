@@ -72,19 +72,19 @@ license and credits. */
 #elif BREWPI_STATIC_CONFIG == BREWPI_SHIELD_REVC
 
     #ifndef oneWirePin
-        #define oneWirePin A4
+        #define oneWirePin 2
     #endif
 
     #ifndef actuatorPin1
-        #define actuatorPin1 2
+        #define actuatorPin1 9
     #endif
 
     #ifndef actuatorPin2
-        #define actuatorPin2 5
+        #define actuatorPin2 6
     #endif
 
     #ifndef actuatorPin3
-        #define actuatorPin3 6
+        #define actuatorPin3 5
     #endif
 
     #ifndef actuatorPin4
