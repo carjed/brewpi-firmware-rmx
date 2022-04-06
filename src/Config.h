@@ -119,7 +119,7 @@ license and credits. */
 // Enable a rotary encoder.  There is no reason not to leave this enabled
 //
 #ifndef BREWPI_ROTARY_ENCODER
-#define BREWPI_ROTARY_ENCODER 1
+#define BREWPI_ROTARY_ENCODER 0
 #endif
 //
 //////////////////////////////////////////////////////////////////////////
