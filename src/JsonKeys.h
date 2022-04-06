@@ -38,6 +38,7 @@ license and credits. */
 static const char JSONKEY_mode[] PROGMEM = "mode";
 static const char JSONKEY_beerSetting[] PROGMEM = "beerSet";
 static const char JSONKEY_fridgeSetting[] PROGMEM = "fridgeSet";
+static const char JSONKEY_fanDuty[] PROGMEM = "fanDuty";
 static const char JSONKEY_heatEstimator[] PROGMEM = "heatEst";
 static const char JSONKEY_coolEstimator[] PROGMEM = "coolEst";
 

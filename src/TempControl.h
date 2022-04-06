@@ -33,6 +33,7 @@ license and credits. */
 #include "TemperatureFormats.h"
 #include "Platform.h"
 #include "TempSensor.h"
+#include "HumiditySensor.h"
 #include "Actuator.h"
 #include "Sensor.h"
 #include "EepromTypes.h"
@@ -206,6 +207,7 @@ class TempControl
 	TEMP_CONTROL_METHOD temperature getFridgeSetting(void);
 	TEMP_CONTROL_METHOD void setFridgeTemp(temperature newTemp);
 
+	TEMP_CONTROL_METHOD humidity getFridgeHumidity(void);
 	TEMP_CONTROL_METHOD temperature getRoomTemp(void)
 	{
 		return ambientSensor->read();
@@ -270,6 +272,7 @@ class TempControl
   public:
 	TEMP_CONTROL_FIELD TempSensor *beerSensor;
 	TEMP_CONTROL_FIELD TempSensor *fridgeSensor;
+	TEMP_CONTROL_FIELD HumiditySensor *fridgeHumidity;
 	TEMP_CONTROL_FIELD BasicTempSensor *ambientSensor;
 	TEMP_CONTROL_FIELD Actuator *heater;
 	TEMP_CONTROL_FIELD Actuator *cooler;

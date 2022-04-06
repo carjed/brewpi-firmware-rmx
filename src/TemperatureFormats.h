@@ -78,6 +78,8 @@ typedef int8_t temp_int;
 typedef fixed7_9 temperature;
 typedef fixed23_9 long_temperature;
 typedef fixed7_25 temperature_precise;
+typedef fixed7_9 humidity;
+typedef fixed7_9 fan_level;
 
 #define TEMP_FIXED_POINT_BITS (9)
 #define TEMP_FIXED_POINT_SCALE (1 << TEMP_FIXED_POINT_BITS)

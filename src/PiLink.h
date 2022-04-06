@@ -128,6 +128,7 @@ class PiLink
 	static void setMode(const char *val);
 	static void setBeerSetting(const char *val);
 	static void setFridgeSetting(const char *val);
+	static void setFanDuty(const char *val);
 	static void setTempFormat(const char *val);
 
 	typedef void (*JsonParserHandlerFn)(const char *val, void *target);

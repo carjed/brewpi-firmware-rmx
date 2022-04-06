@@ -31,6 +31,8 @@ license and credits. */
 #include "BrewpiStrings.h"
 #include "DeviceManager.h"
 #include "TempControl.h"
+#include "FanControl.h"
+#include "HumiditySensor.h"
 #include "Actuator.h"
 #include "Sensor.h"
 #include "TempSensorDisconnected.h"
@@ -45,6 +47,7 @@ license and credits. */
 #include "OneWireTempSensor.h"
 //#include "OneWireActuator.h"
 //#include "DS2413.h"
+// #include "DHT.h"
 #include "OneWire.h"
 #include "DallasTemperature.h"
 #include "ActuatorPin.h"
@@ -57,6 +60,7 @@ class OneWire;
  * Defaults for sensors, actuators and temperature sensors when not defined in the eeprom.
  */
 ValueSensor<bool> defaultSensor(false); // off
+// HumiditySensor defaultHumiditySensor;
 ValueActuator defaultActuator;
 DisconnectedTempSensor defaultTempSensor;
 
@@ -101,11 +105,14 @@ void *DeviceManager::createDevice(DeviceConfig &config, DeviceType dt)
 #else
 			return new DigitalPinSensor(config.hw.pinNr, config.hw.invert);
 #endif
-		else
+		else if (dt == DEVICETYPE_HUM_SENSOR)
+
+			return new HumiditySensor(config.hw.pinNr);
+
 #if BREWPI_SIMULATE
 			return new ValueActuator();
 #else
-
+		else
 			// use hardware actuators even for simulator
 			return new DigitalPinActuator(config.hw.pinNr, config.hw.invert);
 #endif
@@ -143,6 +150,9 @@ void DeviceManager::disposeDevice(DeviceType dt, void *device)
 	case DEVICETYPE_SWITCH_SENSOR:
 		delete (SwitchSensor *)device;
 		break;
+	case DEVICETYPE_HUM_SENSOR:
+		delete (HumiditySensor *)device;
+		break;		
 	case DEVICETYPE_SWITCH_ACTUATOR:
 		delete (Actuator *)device;
 		break;
@@ -182,6 +192,9 @@ inline void **deviceTarget(DeviceConfig &config)
 	case DEVICE_CHAMBER_TEMP:
 		ppv = (void **)&tempControl.fridgeSensor;
 		break;
+	case DEVICE_CHAMBER_HUMIDITY:
+		ppv = (void **)&tempControl.fridgeHumidity;
+		break;		
 	case DEVICE_CHAMBER_FAN:
 		ppv = (void **)&tempControl.fan;
 		break;
@@ -258,6 +271,14 @@ void DeviceManager::uninstallDevice(DeviceConfig &config)
 			*ppv = &defaultSensor;
 		}
 		break;
+	case DEVICETYPE_HUM_SENSOR:
+		if (*ppv != &defaultTempSensor)
+		{
+			DEBUG_ONLY(logInfoInt(INFO_UNINSTALL_HUM_SENSOR, config.deviceFunction));
+			delete (HumiditySensor *)*ppv;
+			*ppv = &defaultTempSensor;
+		}
+		break;		
 	}
 }
 
@@ -300,6 +321,7 @@ void DeviceManager::installDevice(DeviceConfig &config)
 		((ExternalTempSensor *)s)->setConnected(true); // now connect the sensor after init is called
 #endif
 		break;
+	case DEVICETYPE_HUM_SENSOR:
 	case DEVICETYPE_SWITCH_ACTUATOR:
 	case DEVICETYPE_SWITCH_SENSOR:
 		DEBUG_ONLY(logInfoInt(INFO_INSTALL_DEVICE, config.deviceFunction));
@@ -958,6 +980,12 @@ void UpdateDeviceState(DeviceDisplay &dd, DeviceConfig &dc, char *val)
 		{
 			sprintf_P(val, STR_FMT_U, (unsigned int)((Actuator *)*ppv)->isActive() != 0);
 		}
+		else if (dt == DEVICETYPE_HUM_SENSOR)
+		{
+			HumiditySensor &s = *(HumiditySensor *)*ppv;
+			humidity hum = s.read();
+			tempToString(val, hum, 3, 9);
+		}
 	}
 }
 
@@ -1004,6 +1032,9 @@ DeviceType deviceType(DeviceFunction id)
 	case DEVICE_BEER_HEAT:
 	case DEVICE_BEER_COOL:
 		return DEVICETYPE_SWITCH_ACTUATOR;
+
+	case DEVICE_CHAMBER_HUMIDITY:
+		return DEVICETYPE_HUM_SENSOR;
 
 	case DEVICE_CHAMBER_TEMP:
 	case DEVICE_CHAMBER_ROOM_TEMP:

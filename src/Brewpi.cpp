@@ -33,6 +33,8 @@ license and credits. */
 #include "TempControl.h"
 #include "PiLink.h"
 #include "TempSensor.h"
+#include "FanControl.h"
+// #include "HumiditySensor.h"
 #include "TempSensorMock.h"
 #include "TempSensorExternal.h"
 #include "Ticks.h"
@@ -41,6 +43,7 @@ license and credits. */
 #include "UI.h"
 #include "RotaryEncoder.h"
 #include <avr/wdt.h>
+#include "DHT.h"
 
 #if BREWPI_SIMULATE
 #include "Simulator.h"
@@ -76,6 +79,10 @@ void setup()
     // logDebug("started");
     tempControl.init();
     settingsManager.loadSettings();
+
+    // humiditySensor.init();
+    fanControl.init();
+    fanControl.setDuty(0.0f);
 
     uint32_t start = millis();
     uint32_t delay = ui.showStartupPage();

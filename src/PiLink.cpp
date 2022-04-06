@@ -46,6 +46,9 @@ license and credits. */
 #include "PiLinkHandlers.h"
 #include "UI.h"
 #include "Actuator.h"
+#include "DHT.h"
+#include "HumiditySensor.h"
+#include "FanControl.h"
 
 #if BREWPI_SIMULATE
 #include "Simulator.h"
@@ -303,11 +306,12 @@ void PiLink::receive(void)
 #define JSON_FRIDGE_TEMP "ft"
 #define JSON_FRIDGE_SET "fs"
 #define JSON_FRIDGE_ANN "fa"
+#define JSON_FRIDGE_HUMIDITY "fh"
 #define JSON_STATE "s"
 #define JSON_TIME "t"
 #define JSON_ROOM_TEMP "rt"
 
-temperature beerTemp = -1, beerSet = -1, fridgeTemp = -1, fridgeSet = -1;
+temperature beerTemp = -1, beerSet = -1, fridgeTemp = -1, fridgeSet = -1, fridgeHumidity = -1;
 double roomTemp = -1;
 uint8_t state = 0xFF;
 char *beerAnn;
@@ -343,6 +347,7 @@ inline bool changed(PChar &a, PChar b)
 #define JSON_BEER_SET "BeerSet"
 #define JSON_BEER_ANN "BeerAnn"
 #define JSON_FRIDGE_TEMP "FridgeTemp"
+#define JSON_FRIDGE_HUMIDITY "FridgeHumidity"
 #define JSON_FRIDGE_SET "FridgeSet"
 #define JSON_FRIDGE_ANN "FridgeAnn"
 #define JSON_STATE "State"
@@ -385,6 +390,12 @@ void PiLink::printTemperaturesJSON(char *beerAnnotation, char *fridgeAnnotation)
 
 	if (changed(state, tempControl.getState()))
 		sendJsonPair(PSTR(JSON_STATE), (uint8_t)tempControl.getState());
+
+	humidity h;
+	h = tempControl.getFridgeHumidity();
+	if (changed(fridgeHumidity, h))
+		sendJsonTemp(PSTR(JSON_FRIDGE_HUMIDITY), h);
+
 
 #if BREWPI_SIMULATE
 	printJsonName(PSTR(JSON_TIME));
@@ -489,9 +500,11 @@ void PiLink::sendControlSettings(void)
 	char tempString[12];
 	printResponse('S');
 	ControlSettings &cs = tempControl.cs;
+	FanControlSettings &fcs = fanControl.cs;
 	sendJsonPair(JSONKEY_mode, cs.mode);
 	sendJsonPair(JSONKEY_beerSetting, tempToString(tempString, cs.beerSetting, 2, 12));
 	sendJsonPair(JSONKEY_fridgeSetting, tempToString(tempString, cs.fridgeSetting, 2, 12));
+	sendJsonPair(JSONKEY_fanDuty, tempToString(tempString, fcs.fanSetting, 2, 12));
 	sendJsonPair(JSONKEY_heatEstimator, fixedPointToString(tempString, cs.heatEstimator, 3, 12));
 	sendJsonPair(JSONKEY_coolEstimator, fixedPointToString(tempString, cs.coolEstimator, 3, 12));
 	sendJsonClose();
@@ -806,6 +819,18 @@ void PiLink::setFridgeSetting(const char *val)
 	tempControl.setFridgeTemp(newTemp);
 }
 
+void PiLink::setFanDuty(const char *val)
+{
+	fan_level newFanLevel;
+	if (!stringToTemp(&newFanLevel, val))
+	{
+		return; // Could not parse value
+	}
+
+	fanControl.setDuty(newFanLevel);
+}
+
+
 void PiLink::setTempFormat(const char *val)
 {
 	tempControl.cc.tempFormat = val[0];
@@ -921,6 +946,7 @@ const PiLink::JsonParserConvert PiLink::jsonParserConverters[] PROGMEM = {
 	JSON_CONVERT(JSONKEY_mode, NULL, setMode),
 	JSON_CONVERT(JSONKEY_beerSetting, NULL, setBeerSetting),
 	JSON_CONVERT(JSONKEY_fridgeSetting, NULL, setFridgeSetting),
+	JSON_CONVERT(JSONKEY_fanDuty, NULL, setFanDuty),
 
 	JSON_CONVERT(JSONKEY_heatEstimator, &tempControl.cs.heatEstimator, setStringToFixedPoint),
 	JSON_CONVERT(JSONKEY_coolEstimator, &tempControl.cs.coolEstimator, setStringToFixedPoint),

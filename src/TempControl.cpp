@@ -33,6 +33,7 @@ license and credits. */
 #include "TempControl.h"
 #include "PiLink.h"
 #include "TempSensor.h"
+#include "HumiditySensor.h"
 #include "Ticks.h"
 #include "TempSensorMock.h"
 #include "EepromManager.h"
@@ -47,10 +48,12 @@ TempControl tempControl;
 extern ValueSensor<bool> defaultSensor;
 extern ValueActuator defaultActuator;
 extern DisconnectedTempSensor defaultTempSensor;
+// extern HumiditySensor defaultHumiditySensor;
 
 // These sensors are switched out to implement multi-chamber.
 TempSensor *TempControl::beerSensor;
 TempSensor *TempControl::fridgeSensor;
+HumiditySensor *TempControl::fridgeHumidity;
 BasicTempSensor *TempControl::ambientSensor = &defaultTempSensor;
 
 Actuator *TempControl::heater = &defaultActuator;
@@ -701,6 +704,11 @@ temperature TempControl::getFridgeTemp(void)
 temperature TempControl::getFridgeSetting(void)
 {
 	return cs.fridgeSetting;
+}
+
+humidity TempControl::getFridgeHumidity(void)
+{
+	return fridgeHumidity->read();
 }
 
 void TempControl::setBeerTemp(temperature newTemp)

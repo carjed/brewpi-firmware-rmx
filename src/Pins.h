@@ -72,11 +72,11 @@ license and credits. */
 #elif BREWPI_STATIC_CONFIG == BREWPI_SHIELD_REVC
 
     #ifndef oneWirePin
-        #define oneWirePin 2
+        #define oneWirePin A4
     #endif
 
     #ifndef actuatorPin1
-        #define actuatorPin1 9
+        #define actuatorPin1 2
     #endif
 
     #ifndef actuatorPin2
@@ -101,6 +101,14 @@ license and credits. */
 
     #ifndef lcdLatchPin
         #define lcdLatchPin 10
+    #endif
+
+    #ifndef dhtPin
+        #define dhtPin 7
+    #endif
+
+    #ifndef fan1aPin
+        #define fan1aPin 9
     #endif
 
     // If you change the interrupt pins, you will also have to review the

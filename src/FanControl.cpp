@@ -28,50 +28,35 @@ See: 'original-license.md' for notes about the original project's
 license and credits. */
 
 #include "Brewpi.h"
-#include "SettingsManager.h"
-#include "TempControl.h"
 #include "FanControl.h"
-#include "PiLink.h"
-#include "TempSensorExternal.h"
+#include "TempSensor.h"
+#include "Pins.h"
+#include "Ticks.h"
+#include "DHT.h"
 
-void SettingsManager::loadSettings()
-{
-	// logDebug("loading settings");
+// FanController fanController();
 
-	if (!eepromManager.applySettings())
-	{
-		tempControl.loadDefaultSettings();
-		tempControl.loadDefaultConstants();
+// FanController fanController(pin);
 
-		deviceManager.setupUnconfiguredDevices();
+FanControlSettings FanControl::cs;
 
-		logWarning(WARNING_START_IN_SAFE_MODE);
-	}
-
-#if (BREWPI_SIMULATE)
-	{
-		// logDebug("Setting up simulator devices.");
-
-		// temp sensors are special in the simulator - make sure they are set up even if not
-		// configured in the eeprom
-		DeviceConfig cfg;
-		clear((uint8_t *)&cfg, sizeof(cfg));
-		cfg.deviceHardware = DEVICE_HARDWARE_ONEWIRE_TEMP;
-		cfg.chamber = 1;
-		cfg.deviceFunction = DEVICE_CHAMBER_ROOM_TEMP;
-		deviceManager.uninstallDevice(cfg);
-		deviceManager.installDevice(cfg);
-
-		cfg.deviceFunction = DEVICE_CHAMBER_TEMP;
-		deviceManager.uninstallDevice(cfg);
-		deviceManager.installDevice(cfg);
-
-		cfg.beer = 1;
-		cfg.deviceFunction = DEVICE_BEER_TEMP;
-		deviceManager.uninstallDevice(cfg);
-		deviceManager.installDevice(cfg);
-	}
-#endif
+void FanControl::init() {
+    pinMode(fan1aPin, OUTPUT);
+    
+    //Set PWM frequency to about 25khz on pins 9,10 (timer 1 mode 10, no prescale, count to 320)
+    TCCR1A = (1 << COM1A1) | (1 << COM1B1) | (1 << WGM11);
+    TCCR1B = (1 << CS10) | (1 << WGM13);
+    ICR1 = 320;
+    OCR1A = 0;
+    OCR1B = 0;
 }
 
-SettingsManager settingsManager;
+void FanControl::setDuty(fan_level new_fan_level){
+    float f = (float)new_fan_level / (float)(1 << 9);
+    f=f<0?0:f>1?1:f;
+    OCR1A = (uint16_t)(320*f);
+
+    fan_level old_fan_level = cs.fanSetting;
+	cs.fanSetting = new_fan_level;
+
+}

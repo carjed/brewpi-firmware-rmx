@@ -27,51 +27,25 @@ those were the names listed as contributors on the Legacy branch.
 See: 'original-license.md' for notes about the original project's
 license and credits. */
 
+#pragma once
+
 #include "Brewpi.h"
-#include "SettingsManager.h"
-#include "TempControl.h"
-#include "FanControl.h"
-#include "PiLink.h"
-#include "TempSensorExternal.h"
+#include "DHT.h"
+#include "TemperatureFormats.h"
+#include <stdlib.h>
 
-void SettingsManager::loadSettings()
+#define DHTTYPE DHT11
+
+class HumiditySensor
 {
-	// logDebug("loading settings");
 
-	if (!eepromManager.applySettings())
-	{
-		tempControl.loadDefaultSettings();
-		tempControl.loadDefaultConstants();
+  public:
+  	DHT _dht;
+	// HumiditySensor() {};
+	HumiditySensor(uint8_t pin): _dht(pin, DHTTYPE) {};
+	void init();
 
-		deviceManager.setupUnconfiguredDevices();
+	humidity read();
+};
 
-		logWarning(WARNING_START_IN_SAFE_MODE);
-	}
-
-#if (BREWPI_SIMULATE)
-	{
-		// logDebug("Setting up simulator devices.");
-
-		// temp sensors are special in the simulator - make sure they are set up even if not
-		// configured in the eeprom
-		DeviceConfig cfg;
-		clear((uint8_t *)&cfg, sizeof(cfg));
-		cfg.deviceHardware = DEVICE_HARDWARE_ONEWIRE_TEMP;
-		cfg.chamber = 1;
-		cfg.deviceFunction = DEVICE_CHAMBER_ROOM_TEMP;
-		deviceManager.uninstallDevice(cfg);
-		deviceManager.installDevice(cfg);
-
-		cfg.deviceFunction = DEVICE_CHAMBER_TEMP;
-		deviceManager.uninstallDevice(cfg);
-		deviceManager.installDevice(cfg);
-
-		cfg.beer = 1;
-		cfg.deviceFunction = DEVICE_BEER_TEMP;
-		deviceManager.uninstallDevice(cfg);
-		deviceManager.installDevice(cfg);
-	}
-#endif
-}
-
-SettingsManager settingsManager;
+// extern HumiditySensor humiditySensor;

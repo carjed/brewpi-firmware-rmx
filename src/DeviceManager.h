@@ -72,7 +72,7 @@ enum DeviceFunction
 	DEVICE_CHAMBER_TEMP = 5,
 	DEVICE_CHAMBER_ROOM_TEMP = 6, 			// temp sensors
 	DEVICE_CHAMBER_FAN = 7,		  			// a fan in the chamber
-	DEVICE_CHAMBER_RESERVED1 = 8, 			// reserved for future use
+	DEVICE_CHAMBER_HUMIDITY = 8, 			// reserved for future use
 	// carboy devices
 	DEVICE_BEER_FIRST = 9,
 	DEVICE_BEER_TEMP = DEVICE_BEER_FIRST,	// primary beer temp sensor
@@ -100,7 +100,8 @@ enum DeviceType
 	DEVICETYPE_NONE = 0,
 	DEVICETYPE_TEMP_SENSOR = 1,		/* BasicTempSensor - OneWire */
 	DEVICETYPE_SWITCH_SENSOR = 2,  	/* SwitchSensor - direct pin and onewire are supported */
-	DEVICETYPE_SWITCH_ACTUATOR = 3	/* Actuator - both direct pin and onewire are supported */
+	DEVICETYPE_SWITCH_ACTUATOR = 3,	/* Actuator - both direct pin and onewire are supported */
+	DEVICETYPE_HUM_SENSOR = 4		/* DHT humidity sensor */
 };
 
 enum DeviceConnection
@@ -125,7 +126,7 @@ enum DeviceHardware
 
 inline bool isAssignable(DeviceType type, DeviceHardware hardware)
 {
-	return (hardware == DEVICE_HARDWARE_PIN && (type == DEVICETYPE_SWITCH_ACTUATOR || type == DEVICETYPE_SWITCH_SENSOR))
+	return (hardware == DEVICE_HARDWARE_PIN && (type == DEVICETYPE_SWITCH_ACTUATOR || type == DEVICETYPE_SWITCH_SENSOR || type == DEVICETYPE_HUM_SENSOR))
 #if BREWPI_DS2413
 		   || (hardware == DEVICE_HARDWARE_ONEWIRE_2413 && (type == DEVICETYPE_SWITCH_ACTUATOR || (DS2413_SUPPORT_SENSE && type == DEVICETYPE_SWITCH_SENSOR)))
 #endif
