@@ -41,11 +41,23 @@ class HumiditySensor
 
   public:
   	DHT _dht;
+	// dht = _dht;
 	// HumiditySensor() {};
 	HumiditySensor(uint8_t pin): _dht(pin, DHTTYPE) {};
+
+	void setSensor(HumiditySensor *_dht)
+	{
+		dht = _dht;
+	}
+
 	void init();
 
+	bool isConnected() { return dht != NULL && dht->isConnected(); }
+
 	humidity read();
+
+  private:
+	HumiditySensor *dht;
 };
 
 // extern HumiditySensor humiditySensor;

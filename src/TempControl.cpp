@@ -708,7 +708,14 @@ temperature TempControl::getFridgeSetting(void)
 
 humidity TempControl::getFridgeHumidity(void)
 {
-	return fridgeHumidity->read();
+	if (fridgeHumidity->isConnected())
+	{
+		return fridgeHumidity->read();
+	}
+	else
+	{
+		return INVALID_TEMP;
+	}
 }
 
 void TempControl::setBeerTemp(temperature newTemp)
