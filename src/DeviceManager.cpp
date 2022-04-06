@@ -831,6 +831,15 @@ void DeviceManager::enumeratePinDevices(EnumerateHardware &h, EnumDevicesCallbac
 		handleEnumeratedDevice(config, h, callback, info);
 	}
 #endif
+	for (uint8_t count = 0; (pin = deviceManager.enumerateHumidityPins(count)) >= 0; count++)
+	{
+		if (h.pin != -1 && h.pin != pin)
+			continue;
+		config.hw.pinNr = pin;
+		// config.hw.invert = true; // make inverted default, because Arduino shields have transistor on them
+		handleEnumeratedDevice(config, h, callback, info);
+	}
+
 }
 
 void DeviceManager::enumerateOneWireDevices(EnumerateHardware &h, EnumDevicesCallback callback, DeviceCallbackInfo *info)

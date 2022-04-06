@@ -344,6 +344,7 @@ class DeviceManager
 
   private:
 	static int8_t enumerateActuatorPins(uint8_t offset);
+	static int8_t enumerateHumidityPins(uint8_t offset);
 	static int8_t enumerateSensorPins(uint8_t offset);
 	static int8_t enumOneWirePins(uint8_t offset);
 

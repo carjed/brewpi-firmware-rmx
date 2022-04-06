@@ -85,6 +85,13 @@ int8_t DeviceManager::enumerateActuatorPins(uint8_t offset)
     return -1;
 }
 
+int8_t DeviceManager::enumerateHumidityPins(uint8_t offset)
+{
+    if (offset == 0)
+        return dhtPin;
+    return -1;
+}
+
 int8_t DeviceManager::enumerateSensorPins(uint8_t offset)
 {
     if (offset == 0)
