@@ -29,49 +29,24 @@ license and credits. */
 
 #pragma once
 
-#include "Brewpi.h"
-#include "DHT.h"
 #include "TemperatureFormats.h"
-#include <stdlib.h>
 
-#define DHTTYPE DHT11
+#define TEMP_SENSOR_DISCONNECTED INVALID_TEMP
 
-class DHT;
-
-class HumiditySensor
+class BasicHumiditySensor
 {
-
   public:
-	// dht = _dht;
-	// HumiditySensor() {};
-	HumiditySensor(uint8_t pin)
-	: dht(pin, DHTTYPE)
-	{
-		connected = true;
-		// setSensor(dht);
-	};
+	virtual ~BasicHumiditySensor() {}
 
-	// void setSensor(HumiditySensor *dht)
-	// {
-	// 	_dht = dht;
-	// }
+	virtual bool isConnected(void) = 0;
 
-	void init();
+	/*
+	 * Attempt to (re-)initialize the sensor. 	 
+	 */
+	virtual bool init() = 0;
 
-	bool isConnected(void)
-	{
-		return connected;
-		// return _dht != NULL && _dht->isConnected();
-	}
-
-	humidity read();
-
-	// HumiditySensor &sensor();
-
-  private:
-	// HumiditySensor *_dht;
-	DHT dht;
-	bool connected;
+	/*
+	 * Fetch a new reading from the sensor
+	 */
+	virtual humidity read() = 0;
 };
-
-// extern HumiditySensor humiditySensor;
