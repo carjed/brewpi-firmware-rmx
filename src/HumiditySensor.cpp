@@ -38,10 +38,10 @@ license and credits. */
 
 void HumiditySensor::init()
 {
-    _dht.begin();
+    dht.begin();
 }
 
 humidity HumiditySensor::read()
 {
-    return _dht.readHumidity();
+    return dht.readHumidity();
 }
