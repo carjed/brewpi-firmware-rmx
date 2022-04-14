@@ -47,3 +47,20 @@ class DisconnectedTempSensor : public BasicTempSensor
 		return TEMP_SENSOR_DISCONNECTED;
 	}
 };
+
+class DisconnectedHumiditySensor
+{
+
+  public:
+	bool isConnected() { return false; }
+
+	bool init()
+	{
+		return read() != HUMIDITY_SENSOR_DISCONNECTED;
+	}
+
+	humidity read()
+	{
+		return HUMIDITY_SENSOR_DISCONNECTED;
+	}
+};

@@ -68,6 +68,7 @@ typedef int16_t fixed12_4; // 1 sign bit, 11 integer bits, and 4 fraction bits -
 typedef int8_t fixed4_4;   // fixed4_4 uses 1-sign bit, 3 int bits and 4 fraction bits. Corresponds with precision of DS18B20 sensors
 
 #define INVALID_TEMP INT16_MIN
+#define INVALID_HUMIDITY INT16_MIN
 #define INVALID_TEMP_LONG INT32_MIN
 #define MAX_TEMP INT16_MAX
 #define DISABLED_TEMP (INVALID_TEMP + 1)
