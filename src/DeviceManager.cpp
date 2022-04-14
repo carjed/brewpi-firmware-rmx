@@ -60,7 +60,7 @@ class OneWire;
  * Defaults for sensors, actuators and temperature sensors when not defined in the eeprom.
  */
 ValueSensor<bool> defaultSensor(false); // off
-HumiditySensor defaultHumiditySensor;
+DisconnectedHumiditySensor defaultHumiditySensor;
 ValueActuator defaultActuator;
 DisconnectedTempSensor defaultTempSensor;
 
