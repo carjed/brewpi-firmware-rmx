@@ -419,6 +419,14 @@ void PiLink::sendJsonTemp(const char *name, temperature temp)
 	piStream.print(tempString);
 }
 
+void PiLink::sendJsonHumidity(const char *name, humidity hum)
+{
+	char tempString[9];
+	tempToString(tempString, hum, 2, 9);
+	printJsonName(name);
+	piStream.print(tempString);
+}
+
 void PiLink::printTemperatures(void)
 {
 	// Print all temperatures with empty annotations
