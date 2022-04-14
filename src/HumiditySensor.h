@@ -31,6 +31,7 @@ license and credits. */
 
 #include "Brewpi.h"
 #include "DHT.h"
+// #include "Sensor.h"
 #include "TemperatureFormats.h"
 #include <stdlib.h>
 
@@ -48,13 +49,11 @@ class HumiditySensor
 	: dht(pin, DHTTYPE)
 	{
 		connected = true;
+		dht.begin();
 		// setSensor(dht);
 	};
 
-	// void setSensor(HumiditySensor *dht)
-	// {
-	// 	_dht = dht;
-	// }
+	~HumiditySensor(){};
 
 	void init();
 
@@ -69,7 +68,6 @@ class HumiditySensor
 	// HumiditySensor &sensor();
 
   private:
-	// HumiditySensor *_dht;
 	DHT dht;
 	bool connected;
 };

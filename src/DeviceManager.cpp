@@ -60,7 +60,7 @@ class OneWire;
  * Defaults for sensors, actuators and temperature sensors when not defined in the eeprom.
  */
 ValueSensor<bool> defaultSensor(false); // off
-// HumiditySensor defaultHumiditySensor;
+HumiditySensor defaultHumiditySensor;
 ValueActuator defaultActuator;
 DisconnectedTempSensor defaultTempSensor;
 
@@ -207,7 +207,7 @@ inline void **deviceTarget(DeviceConfig &config)
 	return ppv;
 }
 
-// A pointer to a "temp sensor" may be a TempSensor* or a BasicTempSensor* .
+// A pointer to a "temp sensor" may be a TempSensor* or a BasicTempSensor* . 
 // These functions allow uniform treatment.
 inline bool isBasicSensor(DeviceFunction function)
 {
@@ -272,11 +272,11 @@ void DeviceManager::uninstallDevice(DeviceConfig &config)
 		}
 		break;
 	case DEVICETYPE_HUM_SENSOR:
-		if (*ppv != &defaultTempSensor)
+		if (*ppv != &defaultHumiditySensor)
 		{
 			DEBUG_ONLY(logInfoInt(INFO_UNINSTALL_HUM_SENSOR, config.deviceFunction));
 			delete (HumiditySensor *)*ppv;
-			*ppv = &defaultTempSensor;
+			*ppv = &defaultHumiditySensor;
 		}
 		break;		
 	}

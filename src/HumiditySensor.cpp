@@ -36,6 +36,11 @@ license and credits. */
 
 // HumiditySensor humiditySensor;
 
+// HumiditySensor::~HumiditySensor()
+// {
+//     delete dht;
+// };
+
 void HumiditySensor::init()
 {
     dht.begin();
@@ -43,5 +48,7 @@ void HumiditySensor::init()
 
 humidity HumiditySensor::read()
 {
-    return dht.readHumidity();
+    float h = dht.readHumidity();
+    // return ((double)h / (double)(1 << 9));
+    return (humidity)(round(h * (1 << 9)));
 }
