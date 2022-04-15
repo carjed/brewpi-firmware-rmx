@@ -94,7 +94,7 @@ static inline __attribute__((always_inline)) void eepromSizeCheck()
  * or external code will re-establish the values via the piLink
  * interface. 
  */
-#define EEPROM_FORMAT_VERSION 4
+#define EEPROM_FORMAT_VERSION 5
 
 /*
  * Version history:
@@ -105,4 +105,5 @@ static inline __attribute__((always_inline)) void eepromSizeCheck()
  *        for some future expansion.
  * rev 4: added padding at start and reduced device count to 16. We can always
  *        increase later.
+ * rev 5: added humidity sensor.
  */
